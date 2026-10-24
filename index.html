@@ -1,0 +1,1486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Practice Fun! 🐼</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================
+   BASE
+   ========================================================== */
+:root{
+  --ink:#1e293b;
+  --muted:#64748b;
+  --shadow: 0 6px 0 rgba(15,23,42,.08), 0 14px 30px rgba(15,23,42,.08);
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  font-family:'Nunito',system-ui,-apple-system,sans-serif;
+  color:var(--ink);
+  background:linear-gradient(180deg,#d9f0ff 0%, #eef8ff 22%, #fff2fa 58%, #fffae8 100%);
+  background-attachment:fixed;
+  min-height:100vh;
+  padding-bottom:70px;
+  overflow-x:hidden;
+  -webkit-text-size-adjust:100%;
+}
+
+/* ==========================================================
+   FLOATING SKY DECOR
+   ========================================================== */
+.sky{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.sky span{
+  position:absolute;font-size:34px;opacity:.5;
+  animation:bob 9s ease-in-out infinite alternate;
+  will-change:transform;
+}
+@keyframes bob{
+  from{transform:translateY(0) rotate(-8deg);}
+  to{transform:translateY(-30px) rotate(8deg);}
+}
+
+/* ==========================================================
+   CONFETTI CANVAS
+   ========================================================== */
+#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9999;}
+
+/* ==========================================================
+   STICKY HUD
+   ========================================================== */
+.hud{
+  position:sticky;top:0;z-index:60;
+  background:rgba(255,255,255,.86);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  border-bottom:3px solid #dbeafe;
+  box-shadow:0 6px 18px rgba(30,64,175,.09);
+  padding:7px 10px 0;
+}
+.hud-inner{
+  max-width:940px;margin:0 auto;
+  display:flex;align-items:center;gap:8px;
+}
+.level-pill{
+  display:flex;align-items:center;gap:6px;
+  background:linear-gradient(135deg,#a78bfa,#7c3aed);
+  color:#fff;padding:5px 13px;border-radius:999px;
+  font-family:'Baloo 2',cursive;font-weight:700;font-size:.9rem;
+  box-shadow:0 3px 0 #5b21b6;flex:0 0 auto;white-space:nowrap;
+  transition:transform .2s;
+}
+.level-pill.bump{animation:bump .5s ease;}
+@keyframes bump{
+  0%{transform:scale(1);}
+  40%{transform:scale(1.25) rotate(-6deg);}
+  100%{transform:scale(1);}
+}
+.progress-wrap{
+  flex:1 1 auto;display:flex;align-items:center;gap:8px;min-width:0;
+}
+.progress-track{
+  flex:1;height:16px;border-radius:999px;background:#e2e8f0;
+  overflow:hidden;box-shadow:inset 0 2px 4px rgba(15,23,42,.12);
+  min-width:60px;
+}
+.progress-fill{
+  height:100%;width:0%;border-radius:999px;
+  background:linear-gradient(90deg,#34d399,#22d3ee,#60a5fa);
+  background-size:200% 100%;
+  animation:shimmer 3s linear infinite;
+  transition:width .6s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes shimmer{from{background-position:0% 0;}to{background-position:200% 0;}}
+.progress-label{
+  font-family:'Baloo 2',cursive;font-weight:700;font-size:.82rem;
+  color:#475569;white-space:nowrap;
+}
+.streak-pill{
+  display:flex;align-items:center;gap:3px;
+  background:#fff7ed;border:2.5px solid #fed7aa;color:#c2410c;
+  padding:3px 11px;border-radius:999px;
+  font-family:'Baloo 2',cursive;font-weight:700;font-size:.9rem;
+  flex:0 0 auto;transition:.2s;
+}
+.streak-pill.hot{
+  background:#ffedd5;border-color:#fb923c;
+  animation:firePulse 1s ease-in-out infinite;
+  box-shadow:0 0 0 0 rgba(251,146,60,.6);
+}
+@keyframes firePulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(251,146,60,.55);transform:scale(1);}
+  50%{box-shadow:0 0 0 8px rgba(251,146,60,0);transform:scale(1.07);}
+}
+.sound-btn{
+  flex:0 0 auto;width:38px;height:38px;border-radius:50%;
+  border:2.5px solid #cbd5e1;background:#fff;cursor:pointer;
+  font-size:1.05rem;line-height:1;display:grid;place-items:center;
+  transition:.15s;
+}
+.sound-btn:hover{background:#f1f5f9;transform:scale(1.08);}
+.sound-btn:active{transform:scale(.94);}
+.xp-line{
+  max-width:940px;margin:6px auto 0;height:5px;background:#e9d5ff;
+  border-radius:999px;overflow:hidden;
+}
+.xp-line-fill{
+  height:100%;width:0%;border-radius:999px;
+  background:linear-gradient(90deg,#f0abfc,#c084fc,#818cf8);
+  transition:width .5s cubic-bezier(.34,1.56,.64,1);
+}
+
+/* ==========================================================
+   HERO / MASCOT
+   ========================================================== */
+.hero{
+  position:relative;z-index:1;
+  text-align:center;padding:34px 18px 22px;
+  max-width:940px;margin:0 auto;
+}
+.mascot-row{
+  display:flex;align-items:center;justify-content:center;gap:14px;
+  flex-wrap:wrap;margin-bottom:14px;
+}
+.mascot{
+  font-size:clamp(3rem,9vw,4.4rem);
+  animation:mascotFloat 2.6s ease-in-out infinite;
+  filter:drop-shadow(0 8px 12px rgba(124,58,237,.22));
+  line-height:1;
+}
+@keyframes mascotFloat{
+  0%,100%{transform:translateY(0) rotate(-3deg);}
+  50%{transform:translateY(-12px) rotate(3deg);}
+}
+.bubble{
+  position:relative;
+  background:#fff;border:3.5px solid #c4b5fd;
+  border-radius:20px;padding:11px 18px;
+  font-weight:800;font-size:clamp(.85rem,2.6vw,1rem);
+  color:#5b21b6;max-width:330px;text-align:left;
+  box-shadow:0 5px 0 #ddd6fe;
+  transition:transform .2s;
+}
+.bubble.pop{animation:bubblePop .45s cubic-bezier(.34,1.56,.64,1);}
+@keyframes bubblePop{
+  0%{transform:scale(.92);}
+  60%{transform:scale(1.05);}
+  100%{transform:scale(1);}
+}
+.bubble::before{
+  content:'';position:absolute;left:-13px;top:50%;transform:translateY(-50%);
+  border:8px solid transparent;border-right-color:#c4b5fd;
+}
+h1{
+  font-family:'Baloo 2',cursive;
+  font-size:clamp(2rem,7vw,3.3rem);
+  margin:0 0 8px;line-height:1.05;
+  letter-spacing:.5px;
+  color:#7c3aed;
+  text-shadow:0 3px 0 #ede9fe, 0 6px 14px rgba(124,58,237,.15);
+}
+h1 .hl{
+  background:linear-gradient(90deg,#ec4899,#f59e0b,#10b981,#3b82f6);
+  background-size:300% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:rainbow 5s linear infinite;
+}
+@keyframes rainbow{to{background-position:300% 0;}}
+.subtitle{
+  font-size:clamp(.88rem,2.6vw,1.05rem);
+  color:#475569;font-weight:800;
+  margin:0 auto;max-width:600px;
+}
+.subtitle b{color:#7c3aed;}
+
+/* ==========================================================
+   BADGE SHELF
+   ========================================================== */
+.badge-shelf{
+  position:relative;z-index:1;
+  max-width:940px;margin:0 auto 26px;padding:0 16px;
+}
+.shelf-title{
+  font-family:'Baloo 2',cursive;font-size:1.15rem;
+  margin:0 0 10px;color:#334155;font-weight:700;text-align:center;
+}
+.badges{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(78px,1fr));
+  gap:9px;
+}
+.badge{
+  background:#fff;border:3px solid #e2e8f0;border-radius:16px;
+  padding:8px 4px 7px;text-align:center;
+  transition:.25s;position:relative;overflow:hidden;
+}
+.badge-icon{font-size:1.5rem;line-height:1.2;display:block;filter:grayscale(1);opacity:.35;transition:.3s;}
+.badge-name{
+  font-size:.62rem;font-weight:900;color:#94a3b8;
+  text-transform:uppercase;letter-spacing:.3px;margin-top:2px;
+}
+.badge.locked{opacity:.75;}
+.badge.unlocked{
+  border-color:#fbbf24;background:linear-gradient(160deg,#fffbeb,#fef3c7);
+  box-shadow:0 4px 0 #fcd34d;
+}
+.badge.unlocked .badge-icon{filter:none;opacity:1;animation:badgePop .6s cubic-bezier(.34,1.56,.64,1);}
+.badge.unlocked .badge-name{color:#b45309;}
+@keyframes badgePop{
+  0%{transform:scale(0) rotate(-40deg);}
+  60%{transform:scale(1.35) rotate(10deg);}
+  100%{transform:scale(1) rotate(0);}
+}
+
+/* ==========================================================
+   SECTIONS
+   ========================================================== */
+main{max-width:940px;margin:0 auto;padding:0 16px;position:relative;z-index:1;}
+.section{
+  background:#fff;
+  border-radius:28px;
+  padding:0 0 20px;
+  margin:0 0 26px;
+  box-shadow:var(--shadow);
+  border:3px solid #fff;
+  overflow:hidden;
+  opacity:0;transform:translateY(24px);
+  transition:opacity .5s ease, transform .5s cubic-bezier(.34,1.56,.64,1), border-color .3s;
+  position:relative;
+}
+.section.in{opacity:1;transform:translateY(0);}
+.section.section-done{border-color:#86efac;box-shadow:0 6px 0 rgba(34,197,94,.2), 0 14px 30px rgba(34,197,94,.14);}
+.sec-top{
+  display:flex;align-items:center;gap:12px;
+  padding:16px 18px 14px;
+  background:var(--accent-soft);
+  border-bottom:3px dashed rgba(148,163,184,.3);
+  position:relative;
+}
+.sec-badge{
+  flex:0 0 auto;width:50px;height:50px;border-radius:16px;
+  background:var(--accent);color:#fff;
+  display:grid;place-items:center;font-size:1.5rem;
+  box-shadow:0 4px 0 rgba(0,0,0,.15);
+  transform:rotate(-4deg);
+}
+.sec-titles{flex:1;min-width:0;}
+.sec-num{
+  display:inline-block;font-family:'Baloo 2',cursive;
+  font-size:.7rem;font-weight:800;letter-spacing:1.2px;
+  text-transform:uppercase;color:var(--accent-dark);
+  background:#fff;padding:1px 9px;border-radius:999px;
+  margin-bottom:2px;
+}
+.sec-title{
+  font-family:'Baloo 2',cursive;
+  font-size:clamp(1.05rem,3.3vw,1.35rem);
+  margin:0;font-weight:700;color:#1e293b;line-height:1.2;
+}
+.score{
+  flex:0 0 auto;
+  font-family:'Baloo 2',cursive;font-weight:700;font-size:.85rem;
+  background:#fff;color:#64748b;padding:5px 14px;border-radius:999px;
+  border:2.5px solid #e2e8f0;
+  transition:.25s;white-space:nowrap;
+}
+.score.good{background:#dcfce7;border-color:#4ade80;color:#15803d;}
+.done-ribbon{
+  position:absolute;top:12px;right:-38px;transform:rotate(38deg);
+  background:#22c55e;color:#fff;font-family:'Baloo 2',cursive;
+  font-weight:800;font-size:.7rem;padding:3px 44px;
+  box-shadow:0 2px 6px rgba(0,0,0,.2);display:none;letter-spacing:.5px;
+}
+.section-done .done-ribbon{display:block;animation:badgePop .5s ease;}
+.sec-intro{
+  font-size:.9rem;color:#475569;font-weight:700;
+  margin:16px 18px 6px;background:#f8fafc;
+  border-radius:14px;padding:10px 14px;border-left:5px solid var(--accent);
+}
+.ex-list{padding:4px 18px 0;}
+
+/* ==========================================================
+   EXERCISES
+   ========================================================== */
+.ex{
+  display:flex;gap:11px;align-items:flex-start;
+  padding:13px 10px;border-radius:16px;
+  border-bottom:2px dashed #eef2f7;
+  transition:background .2s, transform .2s;
+}
+.ex:last-child{border-bottom:none;}
+.ex:hover{background:#f8fafc;}
+.ex-num{
+  flex:0 0 30px;height:30px;border-radius:50%;
+  background:#f1f5f9;color:#64748b;
+  font-size:.82rem;font-weight:900;
+  display:grid;place-items:center;margin-top:2px;
+  transition:.25s;
+}
+.ex-body{flex:1;min-width:0;}
+.ex-line{font-size:1.02rem;font-weight:700;line-height:2.05;}
+.hint{color:#a78bfa;font-style:italic;font-weight:800;}
+
+input.blank{
+  font-family:inherit;font-size:1.02rem;font-weight:900;
+  border:3px dashed #93c5fd;border-radius:14px;
+  background:#f0f7ff;color:#1d4ed8;
+  padding:4px 12px;margin:0 3px;
+  min-width:128px;width:158px;
+  outline:none;transition:.18s;vertical-align:baseline;
+}
+input.blank::placeholder{color:#bfdbfe;font-weight:800;font-size:.82rem;letter-spacing:.3px;}
+input.blank:focus{
+  border-style:solid;border-color:#2563eb;background:#e0efff;
+  box-shadow:0 0 0 5px rgba(37,99,235,.14);
+  transform:translateY(-1px);
+}
+
+.options{display:flex;gap:9px;flex-wrap:wrap;margin-top:9px;}
+.opt{
+  font-family:inherit;font-size:.95rem;font-weight:900;
+  padding:8px 20px;border-radius:16px;cursor:pointer;
+  border:3px solid #cbd5e1;background:#fff;color:#334155;
+  box-shadow:0 3px 0 #e2e8f0;
+  transition:.14s;
+}
+.opt:hover{border-color:#a5b4fc;background:#f5f3ff;transform:translateY(-2px);box-shadow:0 5px 0 #ddd6fe;}
+.opt:active{transform:translateY(1px);box-shadow:0 1px 0 #ddd6fe;}
+.opt.selected{
+  background:#eef2ff;border-color:#6366f1;color:#3730a3;
+  box-shadow:0 3px 0 #c7d2fe;transform:translateY(-1px);
+}
+
+/* STATES */
+.ex.correct{background:#f0fdf4;animation:popIn .35s ease;}
+.ex.correct .ex-num{background:#22c55e;color:#fff;box-shadow:0 2px 0 #15803d;}
+.ex.correct input.blank{border-style:solid;border-color:#22c55e;background:#fff;color:#15803d;}
+.ex.correct .opt.selected{background:#dcfce7;border-color:#22c55e;color:#15803d;box-shadow:0 3px 0 #86efac;}
+
+.ex.wrong{background:#fff5f5;animation:shake .4s ease;}
+.ex.wrong .ex-num{background:#ef4444;color:#fff;box-shadow:0 2px 0 #b91c1c;}
+.ex.wrong input.blank{border-style:solid;border-color:#ef4444;background:#fff;color:#b91c1c;}
+.ex.wrong .opt.selected{background:#fee2e2;border-color:#ef4444;color:#b91c1c;box-shadow:0 3px 0 #fca5a5;}
+
+.ex.revealed{background:#fffbeb;}
+.ex.revealed .ex-num{background:#fbbf24;color:#fff;}
+.ex.revealed input.blank{border-style:solid;border-color:#fbbf24;background:#fff;color:#b45309;}
+
+@keyframes popIn{0%{transform:scale(.985);}60%{transform:scale(1.012);}100%{transform:scale(1);}}
+@keyframes shake{
+  0%,100%{transform:translateX(0);}
+  20%{transform:translateX(-7px);}
+  40%{transform:translateX(7px);}
+  60%{transform:translateX(-4px);}
+  80%{transform:translateX(4px);}
+}
+
+.fb{
+  font-size:.86rem;font-weight:900;margin-top:7px;
+  display:inline-flex;align-items:center;gap:6px;
+  padding:4px 12px;border-radius:999px;
+  animation:fbPop .3s cubic-bezier(.34,1.56,.64,1);
+}
+.fb.ok{color:#15803d;background:#dcfce7;}
+.fb.no{color:#b91c1c;background:#fee2e2;}
+.xp-gain{
+  background:#fde68a;color:#92400e;font-size:.72rem;
+  padding:1px 8px;border-radius:999px;margin-left:2px;
+}
+@keyframes fbPop{from{transform:scale(.7);opacity:0;}to{transform:scale(1);opacity:1;}}
+
+/* ==========================================================
+   BUTTONS
+   ========================================================== */
+.sec-actions{
+  display:flex;gap:10px;flex-wrap:wrap;
+  margin:18px 18px 0;padding-top:16px;
+  border-top:2px dashed #eef2f7;
+}
+.btn{
+  font-family:'Baloo 2',cursive;
+  font-size:.96rem;font-weight:700;
+  padding:10px 22px;border-radius:999px;border:none;
+  cursor:pointer;transition:.12s;letter-spacing:.3px;
+}
+.btn-primary{background:#7c3aed;color:#fff;box-shadow:0 4px 0 #5b21b6;}
+.btn-primary:hover{background:#6d28d9;transform:translateY(-2px);box-shadow:0 6px 0 #5b21b6;}
+.btn-primary:active{transform:translateY(3px);box-shadow:0 1px 0 #5b21b6;}
+.btn-ghost{background:#fff;border:3px solid #e2e8f0;color:#475569;box-shadow:0 3px 0 #e2e8f0;}
+.btn-ghost:hover{background:#f8fafc;border-color:#c7d2fe;color:#4338ca;transform:translateY(-2px);box-shadow:0 5px 0 #e2e8f0;}
+.btn-ghost:active{transform:translateY(2px);box-shadow:0 1px 0 #e2e8f0;}
+
+/* ==========================================================
+   VOCABULARY
+   ========================================================== */
+.panel{
+  background:#fff;border-radius:28px;padding:22px 20px 24px;
+  margin:0 0 26px;box-shadow:var(--shadow);
+  position:relative;z-index:1;
+}
+.panel-head{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+.panel-badge{
+  width:48px;height:48px;border-radius:16px;display:grid;place-items:center;
+  font-size:1.4rem;color:#fff;transform:rotate(-4deg);
+  box-shadow:0 4px 0 rgba(0,0,0,.15);
+}
+.panel-title{font-family:'Baloo 2',cursive;font-size:clamp(1.1rem,3.4vw,1.35rem);margin:0;font-weight:700;}
+.panel-intro{
+  font-size:.9rem;color:#475569;font-weight:700;margin:12px 0 16px;
+  background:#f8fafc;border-radius:14px;padding:10px 14px;
+}
+.vocab-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px;
+}
+.vocab-card{border-radius:18px;padding:13px 15px 15px;border:3px solid;transition:.2s;}
+.vocab-card:hover{transform:translateY(-3px) rotate(-.6deg);}
+.vocab-card h3{font-family:'Baloo 2',cursive;font-size:1rem;margin:0 0 9px;font-weight:700;}
+.chips{display:flex;flex-wrap:wrap;gap:6px;}
+.chip{
+  background:#fff;border-radius:999px;padding:4px 12px;
+  font-weight:800;font-size:.82rem;border:2px solid;
+  transition:.15s;
+}
+.chip:hover{transform:scale(1.07);}
+.vc1{border-color:#bbf7d0;background:#f0fdf4;}
+.vc1 h3{color:#166534;} .vc1 .chip{border-color:#bbf7d0;color:#166534;}
+.vc2{border-color:#bfdbfe;background:#eff6ff;}
+.vc2 h3{color:#1e40af;} .vc2 .chip{border-color:#bfdbfe;color:#1e40af;}
+.vc3{border-color:#fde68a;background:#fffbeb;}
+.vc3 h3{color:#92400e;} .vc3 .chip{border-color:#fde68a;color:#92400e;}
+.vc4{border-color:#fbcfe8;background:#fdf2f8;}
+.vc4 h3{color:#9d174d;} .vc4 .chip{border-color:#fbcfe8;color:#9d174d;}
+
+/* ==========================================================
+   SPEAKING
+   ========================================================== */
+.tips{
+  background:#fffbeb;border-left:6px solid #fbbf24;
+  padding:12px 16px;border-radius:14px;margin:0 0 16px;
+  font-size:.9rem;color:#78350f;font-weight:800;
+}
+.qlist{list-style:none;padding:0;margin:0;display:grid;gap:9px;}
+.qlist li{
+  background:#fdf2f8;border:3px solid #fbcfe8;border-radius:16px;
+  padding:10px 14px;display:flex;gap:11px;align-items:flex-start;
+  font-weight:800;font-size:.95rem;transition:.2s;cursor:pointer;
+}
+.qlist li:hover{transform:translateX(4px);border-color:#f9a8d4;}
+.qlist li.done{background:#dcfce7;border-color:#86efac;color:#166534;}
+.qlist input[type="checkbox"]{
+  width:21px;height:21px;accent-color:#ec4899;
+  flex:0 0 auto;margin-top:2px;cursor:pointer;
+}
+.qlist li.done input[type="checkbox"]{accent-color:#22c55e;}
+.random-out{
+  margin-top:16px;padding:22px;border-radius:20px;
+  background:linear-gradient(135deg,#fce7f3,#ede9fe);
+  border:4px dashed #f9a8d4;
+  font-family:'Baloo 2',cursive;font-weight:700;
+  font-size:1.12rem;color:#9d174d;display:none;
+}
+.random-out.show{display:block;animation:bubblePop .4s ease;}
+
+/* ==========================================================
+   TOASTS
+   ========================================================== */
+.toast-stack{
+  position:fixed;top:70px;right:14px;z-index:9000;
+  display:flex;flex-direction:column;gap:9px;pointer-events:none;
+  max-width:260px;
+}
+.toast{
+  background:#fff;border-radius:16px;padding:11px 16px;
+  box-shadow:0 8px 22px rgba(15,23,42,.18);
+  border-left:6px solid #a855f7;
+  animation:toastIn .4s cubic-bezier(.34,1.56,.64,1);
+  transition:.35s;
+}
+.toast.out{opacity:0;transform:translateX(40px);}
+.toast-title{font-family:'Baloo 2',cursive;font-weight:800;font-size:.92rem;color:#7c3aed;}
+.toast-msg{font-size:.78rem;font-weight:800;color:#475569;margin-top:1px;}
+@keyframes toastIn{from{opacity:0;transform:translateX(60px) scale(.9);}to{opacity:1;transform:translateX(0) scale(1);}}
+
+/* ==========================================================
+   FOOTER
+   ========================================================== */
+footer{
+  text-align:center;color:#94a3b8;font-weight:800;
+  font-size:.82rem;padding:26px 16px;position:relative;z-index:1;
+}
+
+/* ==========================================================
+   RESPONSIVE
+   ========================================================== */
+@media (max-width:560px){
+  .sec-top{padding:13px 13px 12px;gap:9px;}
+  .sec-badge{width:42px;height:42px;font-size:1.25rem;border-radius:13px;}
+  .ex-list{padding:4px 12px 0;}
+  .sec-intro{margin:13px 13px 6px;}
+  .sec-actions{margin:16px 13px 0;}
+  input.blank{width:132px;min-width:104px;}
+  .btn{font-size:.88rem;padding:9px 17px;}
+  .score{font-size:.75rem;padding:4px 10px;}
+  .progress-label{font-size:.72rem;}
+  .level-pill{font-size:.8rem;padding:4px 10px;}
+  .streak-pill{font-size:.8rem;padding:2px 8px;}
+  .sound-btn{width:34px;height:34px;font-size:.95rem;}
+  .badges{grid-template-columns:repeat(auto-fit,minmax(66px,1fr));gap:7px;}
+  .badge-icon{font-size:1.25rem;}
+  .toast-stack{right:8px;left:8px;max-width:none;top:64px;}
+}
+
+/* ==========================================================
+   REDUCED MOTION
+   ========================================================== */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;}
+  .section{opacity:1;transform:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- floating decorations -->
+<div class="sky" aria-hidden="true">
+  <span style="left:4%;top:12%;animation-delay:0s;">☁️</span>
+  <span style="left:88%;top:8%;animation-delay:1.2s;font-size:28px;">⭐</span>
+  <span style="left:92%;top:46%;animation-delay:.6s;">🎈</span>
+  <span style="left:3%;top:58%;animation-delay:2s;font-size:26px;">✨</span>
+  <span style="left:48%;top:3%;animation-delay:1.6s;font-size:24px;">🌈</span>
+  <span style="left:78%;top:78%;animation-delay:.9s;font-size:24px;">🌟</span>
+  <span style="left:12%;top:86%;animation-delay:2.4s;font-size:26px;">☁️</span>
+</div>
+
+<canvas id="confetti"></canvas>
+<div class="toast-stack" id="toastStack"></div>
+
+<!-- ================= STICKY HUD ================= -->
+<div class="hud">
+  <div class="hud-inner">
+    <div class="level-pill" id="levelPill">Lv <b id="levelNum">1</b></div>
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <span class="progress-label" id="progressLabel">0 / 56</span>
+    </div>
+    <div class="streak-pill" id="streakPill">🔥 <span id="streakNum">0</span></div>
+    <button class="sound-btn" id="soundBtn" title="Sound on / off" aria-label="Toggle sound">🔊</button>
+  </div>
+  <div class="xp-line"><div class="xp-line-fill" id="xpFill"></div></div>
+</div>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <div class="mascot-row">
+    <div class="mascot" id="mascot">🐼</div>
+    <div class="bubble" id="mascotBubble">Hi! I'm Panda Pete 🐼 Let's play with English together!</div>
+  </div>
+  <h1>English <span class="hl">Practice</span> Fun!</h1>
+  <p class="subtitle">56 mini-missions about <b>am / is / are</b>, <b>countries</b>, the <b>present simple</b> and the <b>present continuous</b>. Ready, set, go! 🚀</p>
+</header>
+
+<!-- ================= BADGE SHELF ================= -->
+<section class="badge-shelf" aria-label="My badges">
+  <h2 class="shelf-title">🏅 My Badges</h2>
+  <div class="badges" id="badges"></div>
+</section>
+
+<!-- ================= EXERCISES ================= -->
+<main id="app"></main>
+
+<!-- ================= VOCABULARY ================= -->
+<section class="panel" style="max-width:940px;margin:0 auto 26px;padding-left:0;padding-right:0;background:transparent;box-shadow:none;">
+  <div class="panel" style="margin:0 16px;">
+    <div class="panel-head">
+      <div class="panel-badge" style="background:#8b5cf6;">📚</div>
+      <h2 class="panel-title">Vocabulary Corner</h2>
+    </div>
+    <p class="panel-intro">Read every word out loud 🗣️. Then cover the list with your hand and try to remember them all!</p>
+
+    <div class="vocab-grid">
+      <div class="vocab-card vc1">
+        <h3>🌍 Countries</h3>
+        <div class="chips">
+          <span class="chip">Japan</span><span class="chip">Brazil</span><span class="chip">Egypt</span>
+          <span class="chip">Italy</span><span class="chip">China</span><span class="chip">France</span>
+          <span class="chip">Spain</span><span class="chip">Germany</span><span class="chip">Turkey</span>
+          <span class="chip">Russia</span><span class="chip">England</span><span class="chip">Mexico</span>
+        </div>
+      </div>
+
+      <div class="vocab-card vc2">
+        <h3>🎫 Nationalities</h3>
+        <div class="chips">
+          <span class="chip">Japanese</span><span class="chip">Brazilian</span><span class="chip">Egyptian</span>
+          <span class="chip">Italian</span><span class="chip">Chinese</span><span class="chip">French</span>
+          <span class="chip">Spanish</span><span class="chip">German</span><span class="chip">Turkish</span>
+          <span class="chip">Russian</span><span class="chip">English</span><span class="chip">Mexican</span>
+        </div>
+      </div>
+
+      <div class="vocab-card vc3">
+        <h3>⚽ Free-time verbs</h3>
+        <div class="chips">
+          <span class="chip">play</span><span class="chip">watch</span><span class="chip">read</span>
+          <span class="chip">swim</span><span class="chip">run</span><span class="chip">sing</span>
+          <span class="chip">dance</span><span class="chip">draw</span><span class="chip">cook</span>
+          <span class="chip">ride a bike</span><span class="chip">listen to music</span>
+        </div>
+      </div>
+
+      <div class="vocab-card vc4">
+        <h3>⏰ Daily routine</h3>
+        <div class="chips">
+          <span class="chip">wake up</span><span class="chip">get up</span><span class="chip">brush my teeth</span>
+          <span class="chip">have breakfast</span><span class="chip">go to school</span>
+          <span class="chip">do my homework</span><span class="chip">have dinner</span>
+          <span class="chip">go to bed</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SPEAKING ================= -->
+<section class="panel" style="max-width:908px;margin:0 auto 26px;">
+  <div class="panel-head">
+    <div class="panel-badge" style="background:#ec4899;">🗣️</div>
+    <h2 class="panel-title">Speaking Time!</h2>
+  </div>
+  <p class="panel-intro">Answer every question in a <b>full sentence</b>. Try to use <b>am / is / are</b>, the <b>present simple</b> and the <b>present continuous</b>. Tick the box when you have said your answer out loud ✅</p>
+
+  <div class="tips">
+    💡 <b>Tip:</b> "I <b>am</b> from Turkey. I <b>play</b> football every Saturday, and right now I <b>am sitting</b> in my bedroom and <b>learning</b> English!" — Now you try!
+  </div>
+
+  <ol class="qlist" id="qlist"></ol>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;">
+    <button class="btn btn-primary" id="randomQ">🎲 Give me a random question!</button>
+  </div>
+  <div class="random-out" id="randomOut"></div>
+</section>
+
+<footer>Made with ❤️ for young English learners · Keep practising every day! 🌟</footer>
+
+<script>
+/* ==========================================================
+   1. EXERCISE DATA  (56 exercises)
+   ========================================================== */
+const DATA = [
+  {
+    id:'am-is-are', num:1, title:'The Am-Is-Are Academy', emoji:'⭐',
+    accent:'#3b82f6', soft:'#eff6ff', dark:'#1d4ed8',
+    intro:'Use <b>am</b> with <b>I</b> · use <b>is</b> with <b>he / she / it</b> · use <b>are</b> with <b>you / we / they</b>.',
+    items:[
+      {t:'fill', q:'I {} ten years old.', a:['am']},
+      {t:'fill', q:'My sister {} very kind.', a:['is']},
+      {t:'fill', q:'They {} from Brazil.', a:['are']},
+      {t:'fill', q:'You {} my best friend.', a:['are']},
+      {t:'fill', q:'It {} a big elephant.', a:['is']},
+      {t:'fill', q:'We {} in the classroom.', a:['are']},
+      {t:'fill', q:'He {} a good football player.', a:['is']},
+      {t:'fill', q:'My mum and dad {} at work.', a:['are']},
+      {t:'fill', q:'She {} happy today.', a:['is']},
+      {t:'fill', q:'I {} not hungry.', a:['am']}
+    ]
+  },
+  {
+    id:'countries', num:2, title:'Passport to the World', emoji:'🌍',
+    accent:'#10b981', soft:'#ecfdf5', dark:'#047857',
+    intro:'A <b>country</b> is a place (Japan). A <b>nationality</b> tells where a person comes from (Japanese). Remember: capital letters!',
+    items:[
+      {t:'fill', q:'I am from Japan. I am {}.', a:['Japanese']},
+      {t:'fill', q:'She is from Brazil. She is {}.', a:['Brazilian']},
+      {t:'fill', q:'He is from Egypt. He is {}.', a:['Egyptian']},
+      {t:'fill', q:'They are from Italy. They are {}.', a:['Italian']},
+      {t:'fill', q:'We are from China. We are {}.', a:['Chinese']},
+      {t:'choice', q:'The capital city of France is ___.', o:['Paris','Rome','Madrid'], a:'Paris'},
+      {t:'choice', q:'The capital city of England is ___.', o:['Berlin','London','Tokyo'], a:'London'},
+      {t:'fill', q:'People in Spain speak {}.', a:['Spanish']},
+      {t:'fill', q:'People in Germany speak {}.', a:['German']},
+      {t:'choice', q:'The capital city of Japan is ___.', o:['Tokyo','Beijing','Cairo'], a:'Tokyo'}
+    ]
+  },
+  {
+    id:'present-simple', num:3, title:'Everyday Adventures', emoji:'🔁',
+    accent:'#f59e0b', soft:'#fffbeb', dark:'#b45309',
+    intro:'Use the present simple for things you do <b>every day</b> (habits, routines, facts). With <b>he / she / it</b> add <b>-s</b> or <b>-es</b>.',
+    items:[
+      {t:'fill', q:'She {} (like) ice cream.', a:['likes']},
+      {t:'fill', q:'I {} (play) football every Saturday.', a:['play']},
+      {t:'fill', q:'He {} (go) to school by bus.', a:['goes']},
+      {t:'fill', q:'They {} (watch) TV in the evening.', a:['watch']},
+      {t:'fill', q:'My brother {} (do) his homework after school.', a:['does']},
+      {t:'fill', q:'We {} (not like) spiders.', a:["don't like","do not like","dont like"]},
+      {t:'fill', q:'She {} (not watch) TV in the morning.', a:["doesn't watch","does not watch","doesnt watch"]},
+      {t:'fill', q:'My cat {} (sleep) all day.', a:['sleeps']},
+      {t:'choice', q:'___ you like pizza?', o:['Do','Does','Are'], a:'Do'},
+      {t:'fill', q:'He {} (have) a big dog.', a:['has']}
+    ]
+  },
+  {
+    id:'present-continuous', num:4, title:'Right Now!', emoji:'🎬',
+    accent:'#8b5cf6', soft:'#f5f3ff', dark:'#6d28d9',
+    intro:'Use <b>am / is / are + verb-ing</b> for things happening <b>right now</b>. Look for words like <i>now, look!, listen!</i>',
+    items:[
+      {t:'fill', q:'I {} (read) a book now.', a:['am reading',"i'm reading"]},
+      {t:'fill', q:'She {} (run) in the park.', a:['is running']},
+      {t:'fill', q:'They {} (play) basketball.', a:['are playing']},
+      {t:'fill', q:'He {} (swim) in the pool.', a:['is swimming']},
+      {t:'fill', q:'We {} (watch) a film.', a:['are watching']},
+      {t:'fill', q:'My mum {} (cook) dinner.', a:['is cooking']},
+      {t:'fill', q:'The dog {} (bark) loudly.', a:['is barking']},
+      {t:'fill', q:'I {} (not sleep) now.', a:['am not sleeping']},
+      {t:'fill', q:'You {} (do) your homework.', a:['are doing']},
+      {t:'fill', q:'Look! The baby {} (cry).', a:['is crying']}
+    ]
+  },
+  {
+    id:'simple-vs-continuous', num:5, title:'Tense Detective', emoji:'🕵️',
+    accent:'#ef4444', soft:'#fef2f2', dark:'#b91c1c',
+    intro:'<b>Every day / usually / always / never</b> ➜ present simple. <b>Now / right now / look! / listen!</b> ➜ present continuous. Pick the right one!',
+    items:[
+      {t:'choice', q:'Every day, I ___ to school.', o:['go','am going'], a:'go'},
+      {t:'choice', q:'Look! She ___ a bike.', o:['rides','is riding'], a:'is riding'},
+      {t:'choice', q:'He usually ___ TV after dinner.', o:['watches','is watching'], a:'watches'},
+      {t:'choice', q:'Listen! The birds ___.', o:['sing','are singing'], a:'are singing'},
+      {t:'choice', q:'We ___ pizza every Friday.', o:['eat','are eating'], a:'eat'},
+      {t:'choice', q:'Right now, they ___ football.', o:['play','are playing'], a:'are playing'},
+      {t:'choice', q:'My dad ___ coffee every morning.', o:['drinks','is drinking'], a:'drinks'},
+      {t:'choice', q:'Be quiet! The baby ___.', o:['sleeps','is sleeping'], a:'is sleeping'},
+      {t:'choice', q:'She never ___ to bed late.', o:['goes','is going'], a:'goes'},
+      {t:'choice', q:'Today it ___. Take your umbrella!', o:['rains','is raining'], a:'is raining'}
+    ]
+  },
+  {
+    id:'mixed', num:6, title:'The Grand Challenge', emoji:'🏆',
+    accent:'#ec4899', soft:'#fdf2f8', dark:'#9d174d',
+    intro:'Everything together! Read carefully and think about which tense you need. You can do it! 💪',
+    items:[
+      {t:'fill', q:'Where {} you from?', a:['are']},
+      {t:'fill', q:'My friends {} playing video games now.', a:['are']},
+      {t:'fill', q:'He {} (go) to the park every Sunday.', a:['goes']},
+      {t:'fill', q:'Look! It {} (snow).', a:['is snowing']},
+      {t:'fill', q:'Anna is from Russia. She is {}.', a:['Russian']},
+      {t:'fill', q:'I {} (not like) broccoli.', a:["don't like","do not like","dont like"]}
+    ]
+  }
+];
+
+const TOTAL_EX = DATA.reduce((n,s)=>n+s.items.length,0); // 56
+
+/* ==========================================================
+   2. BADGES
+   ========================================================== */
+const BADGES = [
+  {id:'first',    icon:'🐣', name:'First Step'},
+  {id:'streak5',  icon:'🔥', name:'On Fire'},
+  {id:'halfway',  icon:'🏅', name:'Halfway'},
+  {id:'perfect',  icon:'⭐', name:'Perfect'},
+  {id:'world',    icon:'🌍', name:'Explorer'},
+  {id:'level5',   icon:'💎', name:'Level 5'},
+  {id:'speaker',  icon:'🗣️', name:'Speaker'},
+  {id:'champion', icon:'👑', name:'Champion'}
+];
+
+/* ==========================================================
+   3. HELPERS
+   ========================================================== */
+const $ = sel => document.querySelector(sel);
+const pick = arr => arr[(Math.random()*arr.length)|0];
+
+function norm(s){
+  return (s||'').toString().toLowerCase()
+    .replace(/[\u2018\u2019]/g,"'")
+    .replace(/\s+/g,' ')
+    .trim()
+    .replace(/[.!?]+$/,'');
+}
+
+const PRAISE = ['Awesome! 🎉','You rock! 🤘','Superstar! ⭐','Brilliant! 💡','High five! ✋',
+                'Fantastic! 🌟','Wow! 🚀','Amazing! 🦄','Nice one! 🎈','Perfect! 🏆','Yes! 💪'];
+
+const MASCOT_LINES = ['Great job! Keep going! 🐼','You are on fire! 🔥','Panda is proud of you! 💚',
+                      'Wow, so clever! 🤩','Yes! You did it! 🎉','That was pawsome! 🐾'];
+
+/* ==========================================================
+   4. SOUND (Web Audio)
+   ========================================================== */
+let soundOn = true;
+let ac = null;
+
+function tone(freq, delay, dur, type='sine', vol=0.07){
+  if(!soundOn) return;
+  try{
+    if(!ac) ac = new (window.AudioContext || window.webkitAudioContext)();
+    if(ac.state === 'suspended') ac.resume();
+    const t0 = ac.currentTime + delay;
+    const osc = ac.createOscillator();
+    const g = ac.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, t0);
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.linearRampToValueAtTime(vol, t0 + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    osc.connect(g); g.connect(ac.destination);
+    osc.start(t0); osc.stop(t0 + dur + 0.03);
+  }catch(e){ /* ignore */ }
+}
+const sfxCorrect = () => { tone(660,0,.12); tone(880,.08,.16); };
+const sfxWrong   = () => { tone(200,0,.16,'triangle',.05); tone(150,.09,.18,'triangle',.045); };
+const sfxLevel   = () => [523,659,784,1047].forEach((f,i)=>tone(f,i*0.09,.26,'sine',.08));
+const sfxBadge   = () => [784,988,1175].forEach((f,i)=>tone(f,i*0.08,.2,'triangle',.07));
+
+/* ==========================================================
+   5. CONFETTI
+   ========================================================== */
+const cvs = document.getElementById('confetti');
+const ctx = cvs.getContext('2d');
+let particles = [], rafId = null;
+
+function sizeCanvas(){
+  cvs.width  = window.innerWidth;
+  cvs.height = window.innerHeight;
+}
+sizeCanvas();
+window.addEventListener('resize', sizeCanvas);
+
+const CONF_COLORS = ['#ff6b6b','#ffd93d','#6bcb77','#4d96ff','#c77dff','#ff9f1c','#00d4ff','#ff5fa2','#a78bfa'];
+
+function starPath(c, cx, cy, spikes, outer, inner){
+  let rot = Math.PI / 2 * 3;
+  const step = Math.PI / spikes;
+  c.beginPath();
+  c.moveTo(cx, cy - outer);
+  for(let i = 0; i < spikes; i++){
+    c.lineTo(cx + Math.cos(rot) * outer, cy + Math.sin(rot) * outer); rot += step;
+    c.lineTo(cx + Math.cos(rot) * inner, cy + Math.sin(rot) * inner); rot += step;
+  }
+  c.closePath();
+}
+
+function burst(x, y, count=35, power=9){
+  for(let i=0; i<count; i++){
+    const ang = Math.random() * Math.PI * 2;
+    const sp  = Math.random() * power + 2;
+    particles.push({
+      x, y,
+      vx: Math.cos(ang) * sp,
+      vy: Math.sin(ang) * sp - 4,
+      size: Math.random() * 8 + 4,
+      color: CONF_COLORS[(Math.random() * CONF_COLORS.length) | 0],
+      rot: Math.random() * Math.PI,
+      vr: (Math.random() - 0.5) * 0.32,
+      life: 1,
+      shape: Math.random() < 0.3 ? 'star' : 'rect'
+    });
+  }
+  if(!rafId) rafId = requestAnimationFrame(tickConfetti);
+}
+
+function tickConfetti(){
+  ctx.clearRect(0, 0, cvs.width, cvs.height);
+  particles = particles.filter(p => p.life > 0);
+
+  particles.forEach(p => {
+    p.vy += 0.32;
+    p.vx *= 0.992;
+    p.x += p.vx;
+    p.y += p.vy;
+    p.rot += p.vr;
+    p.life -= 0.0085;
+
+    ctx.save();
+    ctx.globalAlpha = Math.max(0, p.life);
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rot);
+    ctx.fillStyle = p.color;
+    if(p.shape === 'star'){
+      starPath(ctx, 0, 0, 5, p.size, p.size * 0.45);
+      ctx.fill();
+    } else {
+      ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size * 0.62);
+    }
+    ctx.restore();
+  });
+
+  if(particles.length){
+    rafId = requestAnimationFrame(tickConfetti);
+  } else {
+    rafId = null;
+    ctx.clearRect(0, 0, cvs.width, cvs.height);
+  }
+}
+
+function burstAt(el, count, power){
+  if(!el) return;
+  const r = el.getBoundingClientRect();
+  burst(r.left + r.width/2, r.top + Math.min(r.height/2, 60), count, power);
+}
+
+/* ==========================================================
+   6. GAME STATE
+   ========================================================== */
+const XP_PER_LEVEL = 60;
+const MAX_LEVEL = 10;
+
+let xp = 0;
+let level = 1;
+let streak = 0;
+let bestStreak = 0;
+let speakingTicked = 0;
+const unlockedBadges = {};
+
+/* ==========================================================
+   7. TOASTS
+   ========================================================== */
+const toastStack = document.getElementById('toastStack');
+function toast(title, msg){
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.innerHTML = '<div class="toast-title">' + title + '</div>' +
+                 '<div class="toast-msg">' + (msg || '') + '</div>';
+  toastStack.appendChild(el);
+  setTimeout(() => {
+    el.classList.add('out');
+    setTimeout(() => el.remove(), 400);
+  }, 3200);
+}
+
+/* ==========================================================
+   8. MASCOT
+   ========================================================== */
+const mascotBubble = document.getElementById('mascotBubble');
+function mascotSay(text){
+  mascotBubble.textContent = text;
+  mascotBubble.classList.remove('pop');
+  void mascotBubble.offsetWidth;
+  mascotBubble.classList.add('pop');
+}
+
+/* ==========================================================
+   9. HUD
+   ========================================================== */
+const levelNumEl   = document.getElementById('levelNum');
+const levelPillEl  = document.getElementById('levelPill');
+const progressFill = document.getElementById('progressFill');
+const progressLbl  = document.getElementById('progressLabel');
+const xpFill       = document.getElementById('xpFill');
+const streakNumEl  = document.getElementById('streakNum');
+const streakPillEl = document.getElementById('streakPill');
+
+function updateHud(){
+  const solved = document.querySelectorAll('.ex[data-solved="1"]').length;
+
+  progressFill.style.width = Math.min(100, solved / TOTAL_EX * 100) + '%';
+  progressLbl.textContent = solved + ' / ' + TOTAL_EX;
+
+  level = Math.min(MAX_LEVEL, Math.floor(xp / XP_PER_LEVEL) + 1);
+  levelNumEl.textContent = level;
+
+  const intoLevel = level >= MAX_LEVEL ? XP_PER_LEVEL : xp % XP_PER_LEVEL;
+  xpFill.style.width = (intoLevel / XP_PER_LEVEL * 100) + '%';
+
+  streakNumEl.textContent = streak;
+  streakPillEl.classList.toggle('hot', streak >= 3);
+}
+
+function addXp(n){
+  const prevLevel = level;
+  xp += n;
+  updateHud();
+
+  if(level > prevLevel){
+    levelPillEl.classList.remove('bump');
+    void levelPillEl.offsetWidth;
+    levelPillEl.classList.add('bump');
+    sfxLevel();
+    toast('🎉 LEVEL UP!', 'You reached Level ' + level + '!');
+    burst(window.innerWidth / 2, 120, 60, 13);
+    mascotSay('WOW! You are now Level ' + level + '! 🚀');
+  }
+}
+
+/* ==========================================================
+   10. BADGES
+   ========================================================== */
+const badgesEl = document.getElementById('badges');
+BADGES.forEach(b => {
+  const d = document.createElement('div');
+  d.className = 'badge locked';
+  d.dataset.badge = b.id;
+  d.innerHTML = '<div class="badge-icon">' + b.icon + '</div>' +
+                '<div class="badge-name">' + b.name + '</div>';
+  badgesEl.appendChild(d);
+});
+
+function unlockBadge(id){
+  if(unlockedBadges[id]) return;
+  unlockedBadges[id] = true;
+
+  const el = badgesEl.querySelector('[data-badge="' + id + '"]');
+  if(el){
+    el.classList.remove('locked');
+    el.classList.add('unlocked');
+  }
+  const b = BADGES.find(x => x.id === id);
+  sfxBadge();
+  toast('🏅 New badge!', b.icon + ' ' + b.name);
+  burstAt(el, 30, 8);
+}
+
+function checkBadges(){
+  const solved = document.querySelectorAll('.ex[data-solved="1"]').length;
+
+  if(solved >= 1)  unlockBadge('first');
+  if(bestStreak >= 5) unlockBadge('streak5');
+  if(solved >= Math.floor(TOTAL_EX/2)) unlockBadge('halfway');
+  if(document.querySelector('.section.section-done')) unlockBadge('perfect');
+
+  const worldSec = document.getElementById('countries');
+  if(worldSec && worldSec.classList.contains('section-done')) unlockBadge('world');
+
+  if(level >= 5) unlockBadge('level5');
+  if(speakingTicked >= 5) unlockBadge('speaker');
+  if(solved >= TOTAL_EX) unlockBadge('champion');
+}
+
+/* ==========================================================
+   11. BUILD EXERCISES
+   ========================================================== */
+function buildItem(item, index){
+  const ex = document.createElement('div');
+  ex.className = 'ex';
+  ex.dataset.type = item.t;
+
+  const num = document.createElement('div');
+  num.className = 'ex-num';
+  num.textContent = index + 1;
+  ex.appendChild(num);
+
+  const body = document.createElement('div');
+  body.className = 'ex-body';
+  ex.appendChild(body);
+
+  if(item.t === 'fill'){
+    const line = document.createElement('div');
+    line.className = 'ex-line';
+
+    const parts = item.q.split('{}');
+    parts.forEach((p, i) => {
+      if(p){
+        const span = document.createElement('span');
+        span.innerHTML = p.replace(/\(([^)]+)\)/g, '<i class="hint">($1)</i>');
+        line.appendChild(span);
+      }
+      if(i < parts.length - 1){
+        const inp = document.createElement('input');
+        inp.type = 'text';
+        inp.className = 'blank';
+        inp.autocomplete = 'off';
+        inp.spellcheck = false;
+        inp.placeholder = 'type here ⏎';
+        inp.setAttribute('aria-label', 'Answer for exercise ' + (index + 1));
+        inp.dataset.answers = JSON.stringify(item.a);
+
+        inp.addEventListener('input', () => {
+          ex.classList.remove('correct', 'wrong', 'revealed');
+          const fb = ex.querySelector('.fb');
+          if(fb) fb.remove();
+          updateSectionScore(ex.closest('.section'));
+        });
+
+        inp.addEventListener('keydown', e => {
+          if(e.key === 'Enter'){
+            e.preventDefault();
+            if(inp.value.trim()){
+              checkExercise(ex);
+            } else {
+              inp.focus();
+            }
+          }
+        });
+
+        line.appendChild(inp);
+      }
+    });
+    body.appendChild(line);
+
+  } else {
+    ex.dataset.answer = item.a;
+
+    const line = document.createElement('div');
+    line.className = 'ex-line';
+    line.textContent = item.q;
+    body.appendChild(line);
+
+    const opts = document.createElement('div');
+    opts.className = 'options';
+
+    item.o.forEach(o => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'opt';
+      b.dataset.val = o;
+      b.textContent = o;
+
+      b.addEventListener('click', () => {
+        opts.querySelectorAll('.opt').forEach(x => x.classList.remove('selected'));
+        b.classList.add('selected');
+        ex.classList.remove('correct', 'wrong', 'revealed');
+        const fb = ex.querySelector('.fb');
+        if(fb) fb.remove();
+        // instant feedback — very satisfying!
+        checkExercise(ex);
+      });
+
+      opts.appendChild(b);
+    });
+    body.appendChild(opts);
+  }
+
+  return ex;
+}
+
+/* ==========================================================
+   12. CHECKING
+   ========================================================== */
+function evaluate(ex){
+  if(ex.dataset.type === 'fill'){
+    const inp = ex.querySelector('input.blank');
+    const answers = JSON.parse(inp.dataset.answers);
+    const val = norm(inp.value);
+    const ok = val !== '' && answers.some(a => norm(a) === val);
+    return { ok, answerText: answers[0] };
+  }
+  const sel = ex.querySelector('.opt.selected');
+  const ok = !!sel && sel.dataset.val === ex.dataset.answer;
+  return { ok, answerText: ex.dataset.answer };
+}
+
+/**
+ * Checks one exercise, updates visuals, awards XP (once), plays sound.
+ * opts.silent  -> no sound / confetti (used in bulk checks)
+ * opts.noStreak-> don't change the streak counter
+ */
+function checkExercise(ex, opts = {}){
+  if(!ex.dataset.type) return false;
+
+  const { ok, answerText } = evaluate(ex);
+  const wasSolved  = ex.dataset.solved === '1';
+  const wasRevealed = ex.dataset.revealed === '1';
+
+  /* ---- visuals ---- */
+  ex.classList.remove('revealed');
+  ex.classList.toggle('correct', ok);
+  ex.classList.toggle('wrong', !ok);
+
+  const oldFb = ex.querySelector('.fb');
+  if(oldFb) oldFb.remove();
+
+  const fb = document.createElement('div');
+  fb.className = 'fb ' + (ok ? 'ok' : 'no');
+
+  if(ok){
+    fb.innerHTML = pick(PRAISE) + (wasSolved ? '' : ' <span class="xp-gain">+10 XP</span>');
+  } else {
+    fb.innerHTML = '✗ Almost! The answer is <b>&nbsp;' + answerText + '</b>';
+  }
+  ex.querySelector('.ex-body').appendChild(fb);
+
+  /* ---- rewards ---- */
+  if(ok){
+    if(!wasSolved && !wasRevealed){
+      ex.dataset.solved = '1';
+      addXp(10);
+      if(!opts.noStreak){
+        streak++;
+        bestStreak = Math.max(bestStreak, streak);
+      }
+    }
+    if(!opts.silent){
+      sfxCorrect();
+      burstAt(ex, 16, 7);
+      if(Math.random() < 0.35) mascotSay(pick(MASCOT_LINES));
+    }
+  } else {
+    if(!opts.silent) sfxWrong();
+    if(!opts.noStreak) streak = 0;
+  }
+
+  updateHud();
+  updateSectionScore(ex.closest('.section'));
+  checkBadges();
+  checkSectionComplete(ex.closest('.section'));
+
+  return ok;
+}
+
+/* ==========================================================
+   13. SECTION SCORE / COMPLETION
+   ========================================================== */
+function updateSectionScore(sectionEl){
+  if(!sectionEl) return;
+  const total   = sectionEl.querySelectorAll('.ex').length;
+  const correct = sectionEl.querySelectorAll('.ex.correct').length;
+  const badge   = sectionEl.querySelector('[data-score]');
+  if(badge){
+    badge.textContent = correct + ' / ' + total;
+    badge.classList.toggle('good', correct === total);
+  }
+}
+
+function checkSectionComplete(sectionEl){
+  if(!sectionEl || sectionEl.dataset.completed === '1') return;
+
+  const exs = sectionEl.querySelectorAll('.ex');
+  const allDone = exs.length > 0 && Array.from(exs).every(e => e.dataset.solved === '1');
+  if(!allDone) return;
+
+  sectionEl.dataset.completed = '1';
+  sectionEl.classList.add('section-done');
+
+  sfxLevel();
+  toast('⭐ Mission complete!', sectionEl.dataset.title + ' finished!');
+  burstAt(sectionEl.querySelector('.sec-top'), 70, 13);
+  mascotSay('You finished ' + sectionEl.dataset.title + '! Amazing! 🏆');
+
+  updateHud();
+  checkBadges();
+}
+
+/* ==========================================================
+   14. SHOW / RESET
+   ========================================================== */
+function showItem(ex){
+  if(ex.dataset.type === 'fill'){
+    const inp = ex.querySelector('input.blank');
+    inp.value = JSON.parse(inp.dataset.answers)[0];
+  } else {
+    ex.querySelectorAll('.opt').forEach(o => {
+      o.classList.toggle('selected', o.dataset.val === ex.dataset.answer);
+    });
+  }
+  ex.classList.remove('correct', 'wrong');
+  ex.classList.add('revealed');
+  ex.dataset.revealed = '1';
+
+  const fb = ex.querySelector('.fb');
+  if(fb) fb.remove();
+
+  const nf = document.createElement('div');
+  nf.className = 'fb no';
+  nf.style.color = '#b45309';
+  nf.style.background = '#fef3c7';
+  nf.textContent = '👀 Answer shown — now try to remember it!';
+  ex.querySelector('.ex-body').appendChild(nf);
+}
+
+function resetItem(ex){
+  if(ex.dataset.type === 'fill'){
+    ex.querySelector('input.blank').value = '';
+  } else {
+    ex.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+  }
+  ex.classList.remove('correct', 'wrong', 'revealed');
+  delete ex.dataset.revealed;
+  const fb = ex.querySelector('.fb');
+  if(fb) fb.remove();
+}
+
+/* ==========================================================
+   15. RENDER SECTIONS
+   ========================================================== */
+const app = document.getElementById('app');
+
+DATA.forEach(sec => {
+  const section = document.createElement('section');
+  section.className = 'section';
+  section.id = sec.id;
+  section.dataset.title = sec.title;
+  section.style.setProperty('--accent', sec.accent);
+  section.style.setProperty('--accent-soft', sec.soft);
+  section.style.setProperty('--accent-dark', sec.dark);
+
+  section.innerHTML =
+    '<div class="sec-top">' +
+      '<div class="sec-badge">' + sec.emoji + '</div>' +
+      '<div class="sec-titles">' +
+        '<span class="sec-num">Mission ' + sec.num + '</span>' +
+        '<h2 class="sec-title">' + sec.title + '</h2>' +
+      '</div>' +
+      '<div class="score" data-score>0 / ' + sec.items.length + '</div>' +
+      '<div class="done-ribbon">⭐ DONE</div>' +
+    '</div>' +
+    '<p class="sec-intro">' + sec.intro + '</p>';
+
+  const list = document.createElement('div');
+  list.className = 'ex-list';
+  sec.items.forEach((item, i) => list.appendChild(buildItem(item, i)));
+  section.appendChild(list);
+
+  /* buttons */
+  const actions = document.createElement('div');
+  actions.className = 'sec-actions';
+
+  const btnCheck = document.createElement('button');
+  btnCheck.className = 'btn btn-primary';
+  btnCheck.textContent = '✅ Check my answers';
+  btnCheck.addEventListener('click', () => {
+    let anyNew = false;
+    let anyWrong = false;
+
+    list.querySelectorAll('.ex').forEach(ex => {
+      const wasSolved = ex.dataset.solved === '1';
+      const ok = checkExercise(ex, { silent: true, noStreak: true });
+      if(ok && !wasSolved) anyNew = true;
+      if(!ok) anyWrong = true;
+    });
+
+    if(anyNew){
+      sfxCorrect();
+      burstAt(section.querySelector('.sec-top'), 30, 9);
+      mascotSay(pick(MASCOT_LINES));
+    } else if(anyWrong){
+      sfxWrong();
+    }
+    updateHud();
+    checkBadges();
+  });
+
+  const btnShow = document.createElement('button');
+  btnShow.className = 'btn btn-ghost';
+  btnShow.textContent = '👀 Show answers';
+  btnShow.addEventListener('click', () => {
+    list.querySelectorAll('.ex').forEach(showItem);
+    updateSectionScore(section);
+  });
+
+  const btnReset = document.createElement('button');
+  btnReset.className = 'btn btn-ghost';
+  btnReset.textContent = '↺ Reset';
+  btnReset.addEventListener('click', () => {
+    list.querySelectorAll('.ex').forEach(resetItem);
+    updateSectionScore(section);
+  });
+
+  actions.append(btnCheck, btnShow, btnReset);
+  section.appendChild(actions);
+
+  app.appendChild(section);
+});
+
+/* ==========================================================
+   16. SCROLL REVEAL
+   ========================================================== */
+if('IntersectionObserver' in window){
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if(en.isIntersecting){
+        en.target.classList.add('in');
+        io.unobserve(en.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.section').forEach(s => io.observe(s));
+} else {
+  document.querySelectorAll('.section').forEach(s => s.classList.add('in'));
+}
+
+/* ==========================================================
+   17. SOUND TOGGLE
+   ========================================================== */
+const soundBtn = document.getElementById('soundBtn');
+soundBtn.addEventListener('click', () => {
+  soundOn = !soundOn;
+  soundBtn.textContent = soundOn ? '🔊' : '🔇';
+  soundBtn.style.borderColor = soundOn ? '#cbd5e1' : '#fca5a5';
+  soundBtn.style.background  = soundOn ? '#fff' : '#fef2f2';
+  if(soundOn) sfxCorrect();
+});
+
+/* ==========================================================
+   18. SPEAKING QUESTIONS
+   ========================================================== */
+const SPEAKING = [
+  "Where are you from?",
+  "What nationality are you?",
+  "How old are you?",
+  "What is your favourite country? Why?",
+  "What do you usually do after school?",
+  "What are you doing right now?",
+  "What is your best friend doing at the moment?",
+  "Do you play any sports? Which ones?",
+  "What time do you get up every day?",
+  "What are you wearing today?",
+  "Who is in your family?",
+  "What is the weather like today?",
+  "What do you eat for breakfast?",
+  "Is there a country you want to visit? Why?",
+  "What are your friends doing at break time?",
+  "What do you do at the weekend?",
+  "Can you name three countries and their nationalities?",
+  "What is your mum or dad doing now?",
+  "Tell me about your favourite food. Do you like it?",
+  "What are you learning in English this week?"
+];
+
+const qlist = document.getElementById('qlist');
+
+SPEAKING.forEach((q, i) => {
+  const li = document.createElement('li');
+  const cb = document.createElement('input');
+  cb.type = 'checkbox';
+  cb.id = 'sq' + i;
+
+  const label = document.createElement('label');
+  label.htmlFor = 'sq' + i;
+  label.textContent = q;
+  label.style.cursor = 'pointer';
+  label.style.flex = '1';
+
+  cb.addEventListener('change', () => {
+    li.classList.toggle('done', cb.checked);
+
+    speakingTicked = qlist.querySelectorAll('input:checked').length;
+
+    if(cb.checked){
+      tone(700, 0, .1, 'sine', .05);
+      if(speakingTicked % 5 === 0){
+        toast('🗣️ Well done!', speakingTicked + ' speaking answers said out loud!');
+        burstAt(li, 22, 7);
+      }
+    }
+    checkBadges();
+  });
+
+  li.append(cb, label);
+  qlist.appendChild(li);
+});
+
+const randomOut = document.getElementById('randomOut');
+document.getElementById('randomQ').addEventListener('click', () => {
+  const q = pick(SPEAKING);
+  randomOut.textContent = '🎤 ' + q;
+  randomOut.classList.remove('show');
+  void randomOut.offsetWidth;
+  randomOut.classList.add('show');
+  tone(600, 0, .1, 'triangle', .05);
+});
+
+/* ==========================================================
+   19. GO!
+   ========================================================== */
+updateHud();
+setTimeout(() => {
+  mascotSay('Tap an answer or press Enter. Earn XP and collect all 8 badges! 🏅');
+}, 2600);
+</script>
+
+</body>
+</html>
